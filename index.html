@@ -59,6 +59,7 @@
   /* callouts */
   .box{border-radius:14px;padding:16px 18px;margin:20px 0;font-size:16px;line-height:1.6;display:flex;gap:13px;align-items:flex-start;background:var(--soft);color:var(--ink)}
   .box .ic{font-size:18px;line-height:1.4;flex-shrink:0}
+  .box>div{min-width:0}  /* flex 자식이 긴 코드/URL 때문에 넓어지는 것 방지 */
   .box.warn{background:#fbf3e4}
   .box.danger{background:#fbece9}
   .box.ok{background:#eef6f0}
@@ -77,6 +78,11 @@
   td code{font-size:13.5px}
   /* diagram */
   .diagram{background:var(--soft);border-radius:var(--radius);padding:34px 30px;margin:24px 0;overflow-x:auto}
+  /* mermaid 다이어그램: 흰 배경 + 가운데 정렬 */
+  .diagram.mm{background:#fff;border:1px solid var(--hair)}
+  .mermaid{display:flex;justify-content:center;line-height:1.4;background:transparent;padding:0;margin:0;border-radius:0}
+  .mermaid svg{max-width:100%;height:auto}
+  .mermaid small{font-size:11px;color:var(--ter)}
   .flow{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;font-size:13px}
   .node{border:1px solid var(--line);border-radius:13px;padding:14px 18px;text-align:center;background:#fff;min-width:128px}
   .node .t{font-weight:600;font-size:14px;color:var(--ink)}
@@ -87,7 +93,50 @@
   kbd{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:12.5px;background:#fff;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:2px 7px;color:var(--ink)}
   footer{border-top:1px solid var(--hair);padding-top:26px;color:var(--ter);font-size:14px;line-height:1.7}
   hr{border:none;border-top:1px solid var(--hair);margin:32px 0}
-  @media (max-width:900px){.layout{grid-template-columns:1fr}aside{display:none}main{padding:40px 24px 90px;max-width:none}.hero h1{font-size:34px}}
+  /* ===== 반응형: 태블릿 이하 ===== */
+  @media (max-width:900px){
+    .layout{grid-template-columns:1fr}
+    /* 사이드바 → 상단 가로 스크롤 목차 (모바일에서도 네비 유지) */
+    aside{position:sticky;top:0;height:auto;min-width:0;overflow:hidden;z-index:50;padding:12px 16px 10px;border-right:none;border-bottom:1px solid var(--line)}
+    nav{min-width:0}
+    aside .sub{display:none}
+    aside .brand{margin-bottom:9px;font-size:17px}
+    nav{display:flex;gap:5px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:3px}
+    nav a{white-space:nowrap;flex:0 0 auto;padding:6px 11px;font-size:12.5px;background:var(--soft)}
+    nav a.head{display:none}
+    nav a .n{width:auto;margin-right:5px}
+    main{padding:38px 22px 90px;max-width:none}
+    .hero h1{font-size:34px}
+    /* 순서 흐름 다이어그램 → 세로 스택 */
+    .flow{flex-direction:column}
+    .arrow{transform:rotate(90deg);padding:9px 0}
+    .node{min-width:170px}
+  }
+  /* ===== 반응형: 휴대폰 ===== */
+  @media (max-width:600px){
+    body{font-size:15.5px}
+    main{padding:28px 16px 78px}
+    .hero{margin-bottom:42px}
+    .hero h1{font-size:27px;letter-spacing:-1px}
+    .hero p{font-size:16px}
+    section{margin-bottom:54px}
+    section>h2{font-size:23px;letter-spacing:-.5px}
+    section>.lead{font-size:16px}
+    h3{font-size:18px;margin-top:32px}
+    /* 표: 폰트·여백 축소 + 긴 텍스트/URL 줄바꿈 */
+    table{font-size:13.5px}
+    th,td{padding:9px 10px}
+    code:not(pre code){font-size:12.5px;word-break:break-word}
+    td code{word-break:break-all}
+    pre{font-size:12px;padding:14px 14px;border-radius:11px}
+    .box{font-size:14.5px;padding:13px 14px;gap:10px}
+    .diagram{padding:22px 16px}
+    /* 탭: 화면 폭에 꽉 차게 균등 분할 */
+    .tabs{display:flex;width:100%}
+    .tabs button{flex:1;padding:7px 6px;font-size:12.5px}
+    ol.steps>li{padding-left:36px}
+    ol.steps>li::before{width:25px;height:25px;font-size:12px}
+  }
 </style>
 </head>
 <body>
@@ -134,26 +183,44 @@
       <h2><span class="num">0.</span> 큰 그림 — 무엇을 어떤 순서로</h2>
       <p class="lead">설치는 "OS를 올리고 → 죽지 않게 만들고 → 멀리서 만질 수 있게" 만드는 흐름입니다. 순서가 중요해요.</p>
 
-      <div class="diagram">
-        <div class="flow">
-          <div class="node"><div class="t">1. OS 설치</div><div class="d">우분투<br>데스크탑</div></div>
-          <div class="arrow">→</div>
-          <div class="node"><div class="t">2. BIOS</div><div class="d">정전 후<br>자동 켜짐</div></div>
-          <div class="arrow">→</div>
-          <div class="node"><div class="t">3. 네트워크</div><div class="d">고정 IP<br>고정</div></div>
-          <div class="arrow">→</div>
-          <div class="node"><div class="t">4. 무인화</div><div class="d">비번 팝업<br>제거</div></div>
-          <div class="arrow">→</div>
-          <div class="node"><div class="t">5~8. 도구</div><div class="d">git·ssh·<br>docker·원격</div></div>
-        </div>
+      <div class="diagram mm">
+        <pre class="mermaid">
+flowchart LR
+    s1["1. OS 설치<br/><small>우분투 데스크탑</small>"] --> s2["2. BIOS<br/><small>정전 후 자동 켜짐</small>"]
+    s2 --> s3["3. 네트워크<br/><small>고정 IP</small>"]
+    s3 --> s4["4. 무인화<br/><small>비번 팝업 제거</small>"]
+    s4 --> s5["5~8. 도구<br/><small>git · ssh · docker · 원격</small>"]
+
+    classDef step fill:#fff,stroke:#86868b,stroke-width:1.5px,color:#1d1d1f;
+    classDef hot fill:#fdeede,stroke:#E67E22,stroke-width:1.5px,color:#7a3f08;
+    class s1,s3,s5 step;
+    class s2,s4 hot;
+        </pre>
       </div>
+      <p style="color:var(--ter);font-size:14px;margin-top:-8px">주황색 두 단계(<b>BIOS·무인화</b>)가 현장 무인 운영을 위한 핵심 설정입니다.</p>
+
+      <h3>이번에 설치할 장비</h3>
+      <table>
+        <tbody>
+          <tr><th>모델</th><td><b>레노버 아이디어센터(IdeaCentre) 17IAS10</b> · 제품번호 <code>91B1000FKA</code> · 타워 데스크탑</td></tr>
+          <tr><th>CPU</th><td>인텔 <b>Core Ultra 5</b> — 2025년 신규 플랫폼</td></tr>
+          <tr><th>그래픽</th><td><b>NVIDIA GeForce RTX 5060</b> — 2025년 신규 GPU</td></tr>
+          <tr><th>메모리 / 저장</th><td>16GB RAM / 512GB NVMe SSD</td></tr>
+        </tbody>
+      </table>
+      <div class="box danger"><span class="ic">🚨</span><div><b>이 장비라서 일반 가이드와 달라지는 점 — 설치 전에 꼭 읽으세요.</b>
+        <ul>
+          <li><b>우분투는 반드시 24.04.2 LTS 이상.</b> Core Ultra 5·RTX 5060이 <u>2025년 신규 하드웨어</u>라, 22.04의 옛 커널로는 설치 도중 <u>화면이 안 나오거나</u> 유선랜·그래픽을 못 잡을 수 있습니다. <code>ubuntu.com</code>에서 <b>최신 포인트 릴리스(24.04.2 이상)</b> ISO를 받으세요.</li>
+          <li><b>RTX 5060 = NVIDIA 신형 GPU.</b> 설치 USB로 부팅했을 때 화면이 깨지거나 까맣게 멈추면 <code>nomodeset</code>으로 부팅하고, 설치 후 <b>NVIDIA 독점 드라이버</b>를 깔아야 합니다. → <b>1번 섹션 "5) 그래픽 드라이버"</b> 참고.</li>
+          <li><b>레노버 BIOS 진입키는 <kbd>F1</kbd>(또는 <kbd>F2</kbd>), 부팅 메뉴는 <kbd>F12</kbd></b> — 흔한 <kbd>Del</kbd>이 아닙니다. → 2번 섹션 참고.</li>
+        </ul></div></div>
 
       <h3>준비물</h3>
       <table>
         <thead><tr><th>항목</th><th>설명</th></tr></thead>
         <tbody>
           <tr><td><b>USB 메모리</b></td><td>8GB 이상. 설치 미디어로 만들면 안의 내용은 모두 지워집니다.</td></tr>
-          <tr><td><b>우분투 ISO</b></td><td><code>ubuntu.com/download/desktop</code> 에서 다운로드 (예: <code>ubuntu-24.04.x-desktop-amd64.iso</code>)</td></tr>
+          <tr><td><b>우분투 ISO</b></td><td><code>ubuntu.com/download/desktop</code> 에서 다운로드. <b>이 장비는 24.04.2 LTS 이상</b>(예: <code>ubuntu-24.04.2-desktop-amd64.iso</code>) — 신규 하드웨어라 22.04는 권장하지 않습니다.</td></tr>
           <tr><td><b>USB 굽는 도구</b></td><td>Windows → <b>Rufus</b>, macOS/리눅스 → <b>balenaEtcher</b> 또는 <code>dd</code></td></tr>
           <tr><td><b>유선 랜</b></td><td>설치·업데이트는 유선이 가장 안정적. 고정 IP를 쓸 포트에 미리 꽂아두세요.</td></tr>
           <tr><td><b>관리 정보</b></td><td>배정받을 <b>고정 IP / 게이트웨이 / DNS</b>, 장비에 줄 <b>호스트명·계정명·비밀번호</b></td></tr>
@@ -205,7 +272,8 @@
         <li>부팅 장치 목록에서 <b>USB(UEFI: ...)</b> 항목 선택</li>
         <li>검은 화면 메뉴에서 <b>Try or Install Ubuntu</b> 선택</li>
       </ol>
-      <div class="box warn"><span class="ic">⚠️</span><div>USB로 안 넘어가고 기존 OS로 부팅되면, BIOS의 <b>Boot Order(부팅 순서)</b>에서 USB를 1순위로 올리거나, <b>Secure Boot</b>를 잠시 끄면 됩니다. (BIOS 진입은 2번 섹션 참고)</div></div>
+      <div class="box warn"><span class="ic">⚠️</span><div>USB로 안 넘어가고 기존 OS로 부팅되면, BIOS의 <b>Boot Order(부팅 순서)</b>에서 USB를 1순위로 올리거나, <b>Secure Boot</b>를 잠시 끄면 됩니다. (레노버는 부팅 메뉴 <kbd>F12</kbd>, BIOS 진입 <kbd>F1</kbd>/<kbd>F2</kbd> — 2번 섹션 참고)</div></div>
+      <div class="box danger"><span class="ic">🖥️</span><div><b>RTX 5060 장비 주의 — "Try or Install Ubuntu"에서 화면이 까맣거나 깨지면:</b> 그 메뉴에 커서를 두고 <kbd>e</kbd>를 눌러 부팅 옵션 편집 → <code>linux ...</code>로 시작하는 줄 끝의 <code>quiet splash</code> 뒤에 <b><code>nomodeset</code></b>을 한 칸 띄고 추가 → <kbd>F10</kbd>(또는 Ctrl+X)로 부팅. 신형 NVIDIA GPU라 기본 드라이버가 화면을 못 잡을 때의 우회법입니다. (설치 후 정식 드라이버 깔면 해결 — 아래 5번)</div></div>
 
       <h3>3) 설치 마법사</h3>
       <ol class="steps">
@@ -228,6 +296,21 @@
 <pre><span class="c"># 패키지 목록 갱신 + 전체 업그레이드 (이후 모든 설치의 기본)</span>
 <span class="k">sudo</span> apt update
 <span class="k">sudo</span> apt upgrade -y</pre>
+
+      <h3>5) 그래픽 드라이버 (이 장비: RTX 5060)</h3>
+      <p>이 장비는 NVIDIA <b>RTX 5060</b>이라, 기본 오픈소스 드라이버(nouveau)로는 화면이 불안정하거나 성능이 안 나옵니다. <b>NVIDIA 독점 드라이버</b>를 깔아야 합니다. (내장 그래픽만 쓰는 일반 PC는 이 단계 생략)</p>
+<pre><span class="c"># 1) 이 PC에 권장되는 드라이버 자동 설치 (가장 쉬움)</span>
+<span class="k">sudo</span> ubuntu-drivers install
+
+<span class="c"># (또는) 버전을 직접 지정해 설치 — 최신 안정 버전 권장</span>
+<span class="k">sudo</span> apt install -y nvidia-driver-570
+
+<span class="c"># 2) 재부팅 후 정상 인식 확인 (GPU·드라이버 버전이 표로 나오면 성공)</span>
+<span class="k">sudo</span> reboot
+<span class="k">nvidia-smi</span></pre>
+      <div class="box warn"><span class="ic">🔐</span><div><b>Secure Boot가 켜져 있으면</b>(레노버 기본값) 드라이버 설치 중 <b>MOK 등록</b>을 요구할 수 있습니다 — 임의 비밀번호를 정하라고 한 뒤, 재부팅 시 파란 화면(MOK management)에서 <b>Enroll MOK → Continue → 그 비밀번호 입력</b>하면 됩니다. 번거로우면 BIOS에서 <b>Secure Boot를 Disabled</b>로 두면 이 절차가 사라집니다.</div></div>
+      <div class="box info"><span class="ic">💡</span><div>드라이버 설치 후에도 화면이 이상하면, 1번에서 임시로 넣었던 <code>nomodeset</code>이 <code>/etc/default/grub</code>에 남아 충돌하는 경우가 있습니다. 그 줄에서 <code>nomodeset</code>을 지우고 <code>sudo update-grub</code> → 재부팅하세요.</div></div>
+
       <div class="box ok"><span class="ic">✅</span><div>여기까지면 OS는 올라갔습니다. 이제 "죽지 않고 / 멀리서 관리되는" 장비로 다듬는 단계로 갑니다.</div></div>
     </section>
 
@@ -240,7 +323,7 @@
 
       <h3>1) BIOS 진입</h3>
       <ol class="steps">
-        <li>PC를 켜자마자 <b>BIOS 키</b>를 연타: 보통 <kbd>Del</kbd> 또는 <kbd>F2</kbd> (제조사별: ASUS·MSI·기가바이트=<kbd>Del</kbd>, 일부 노트북=<kbd>F2</kbd>)</li>
+        <li>PC를 켜자마자 <b>BIOS 키</b>를 연타: 보통 <kbd>Del</kbd> 또는 <kbd>F2</kbd> (제조사별: ASUS·MSI·기가바이트=<kbd>Del</kbd>, <b>레노버 아이디어센터=<kbd>F1</kbd> 또는 <kbd>F2</kbd></b>, 일부 노트북=<kbd>F2</kbd>). <b>부팅 메뉴는 레노버 <kbd>F12</kbd></b></li>
         <li>이미 우분투가 켜진 상태라면: <code>sudo systemctl reboot --firmware-setup</code> 로 재부팅하면 바로 BIOS로 진입</li>
       </ol>
 
@@ -627,6 +710,17 @@
     });
   }, {rootMargin:'-10% 0px -80% 0px'});
   document.querySelectorAll('section[id]').forEach(function(s){ obs.observe(s); });
+</script>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    securityLevel: 'loose',
+    fontFamily: '-apple-system,BlinkMacSystemFont,"SF Pro Text","Apple SD Gothic Neo",sans-serif',
+    themeVariables: { lineColor:'#86868b', fontSize:'14px' },
+    flowchart: { curve:'basis', htmlLabels:true, padding:14, nodeSpacing:55, rankSpacing:70 }
+  });
 </script>
 </body>
 </html>
